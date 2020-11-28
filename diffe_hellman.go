@@ -9,10 +9,6 @@ type DiffieHellman struct {
 	G int
 }
 
-func (dh DiffieHellman) New(P int, G int) DiffieHellman {
-	return DiffieHellman{P, G}
-}
-
 func (dh DiffieHellman) GetPublicKey(privateKey int) int {
 	return dh.power(dh.G, privateKey)
 }
