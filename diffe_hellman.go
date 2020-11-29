@@ -1,24 +1,55 @@
 package dh
 
 import (
-	"math"
+	"crypto"
+	"crypto/elliptic"
+	"crypto/rand"
+	"fmt"
+	"math/big"
 )
 
-type DiffieHellman struct {
-	P int
-	G int
+type ECDH struct {
+	curve elliptic.Curve
 }
 
-func (dh DiffieHellman) GetPublicKey(privateKey int) int {
-	return dh.power(dh.G, privateKey)
+type ellipticPublicKey struct {
+	X, Y *big.Int
 }
 
-func (dh DiffieHellman) GetSharedSecret(otherPublic int, localPrivate int) int {
-	return dh.power(otherPublic, localPrivate)
+type ellipticPrivateKey struct {
+	privateKey []byte
 }
 
-func (dh DiffieHellman) power(a int, b int) int {
-	pow := int(math.Pow(float64(a), float64(b)))
-	return pow % dh.P
+func NewECDH(curve elliptic.Curve) *ECDH {
+	return &ECDH{curve: curve}
 }
+
+func (e *ECDH) GenerateKeyPair() (crypto.PublicKey, crypto.PrivateKey) {
+	var privateKey crypto.PrivateKey
+	var publicKey crypto.PublicKey
+
+	priv, x, y, err := elliptic.GenerateKey(e.curve, rand.Reader)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	privateKey = &ellipticPrivateKey{privateKey: priv}
+
+	publicKey = &ellipticPublicKey{
+		X: x,
+		Y: y,
+	}
+
+	return publicKey, privateKey
+}
+
+func (e *ECDH) GenerateSharedSecret(privKey crypto.PrivateKey, pubKey crypto.PublicKey) ([]byte, error) {
+	priv := privKey.(*ellipticPrivateKey)
+	pub := pubKey.(*ellipticPublicKey)
+
+	x, _ := e.curve.ScalarMult(pub.X, pub.Y, priv.privateKey)
+	return x.Bytes(), nil
+}
+
+
 
