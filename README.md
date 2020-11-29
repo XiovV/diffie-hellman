@@ -1,4 +1,4 @@
-This is an implementation of the elliptic curve Diffie Hellman key exchange algorithm (ECDH).
+This is an implementation of the elliptic curve Diffie Hellman key exchange algorithm (ECDH) in Go.
 It supports any curve that satisifes the `elliptic.Curve` interface.
 
 This library provides a few methods that handle the generation of key pairs and calculation of the shared secret.
