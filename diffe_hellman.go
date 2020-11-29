@@ -50,3 +50,21 @@ func (e *ECDH) GenerateSharedSecret(privKey crypto.PrivateKey, pubKey crypto.Pub
 	x, _ := e.curve.ScalarMult(pub.X, pub.Y, priv.privateKey)
 	return x.Bytes(), nil
 }
+
+func (e *ECDH) Marshal(publicKey crypto.PublicKey) []byte {
+	pub := publicKey.(*ellipticPublicKey)
+	return elliptic.Marshal(e.curve, pub.X, pub.Y)
+}
+
+func (e *ECDH) Unmarshal(data []byte) crypto.PublicKey {
+	var key *ellipticPublicKey
+
+	x, y := elliptic.Unmarshal(e.curve, data)
+
+	key = &ellipticPublicKey{
+		X: x,
+		Y: y,
+	}
+
+	return key
+}
