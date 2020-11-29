@@ -50,6 +50,3 @@ func (e *ECDH) GenerateSharedSecret(privKey crypto.PrivateKey, pubKey crypto.Pub
 	x, _ := e.curve.ScalarMult(pub.X, pub.Y, priv.privateKey)
 	return x.Bytes(), nil
 }
-
-
-
