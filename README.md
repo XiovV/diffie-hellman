@@ -37,7 +37,7 @@ func main() {
 
 Example output: 
 ```shell script
-aliceShared:  [165 14 34 171 138 109 21 120 141 218 154 153 115 135 171 128 136 77 85 234 104 136 129 63 170 132 218 218]
-bobShared:  [165 14 34 171 138 109 21 120 141 218 154 153 115 135 171 128 136 77 85 234 104 136 129 63 170 132 218 218]
+aliceShared: [165 14 34 171 138 109 21 120 141 218 154 153 115 135 171 128 136 77 85 234 104 136 129 63 170 132 218 218]
+bobShared:   [165 14 34 171 138 109 21 120 141 218 154 153 115 135 171 128 136 77 85 234 104 136 129 63 170 132 218 218]
 ```
 As you can see, both aliceShared and bobShared are the same, which means that the library successfully generated shared secrets for Bob and Alice.
