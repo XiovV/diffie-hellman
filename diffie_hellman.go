@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"crypto/elliptic"
 	"crypto/rand"
+	"crypto/sha256"
 	"fmt"
 	"math/big"
 )
@@ -43,28 +44,15 @@ func (e *ECDH) GenerateKeyPair() (crypto.PublicKey, crypto.PrivateKey) {
 	return publicKey, privateKey
 }
 
-func (e *ECDH) GenerateSharedSecret(privKey crypto.PrivateKey, pubKey crypto.PublicKey) ([]byte, error) {
+func (e *ECDH) GenerateSharedSecret(privKey crypto.PrivateKey, pubKey crypto.PublicKey) (string, error) {
 	priv := privKey.(*ellipticPrivateKey)
 	pub := pubKey.(*ellipticPublicKey)
 
 	x, _ := e.curve.ScalarMult(pub.X, pub.Y, priv.privateKey)
-	return x.Bytes(), nil
+	hash := sha256.New()
+	hash.Write(x.Bytes())
+	return fmt.Sprintf("%x", hash.Sum(nil)), nil
 }
 
-func (e *ECDH) Marshal(publicKey crypto.PublicKey) []byte {
-	pub := publicKey.(*ellipticPublicKey)
-	return elliptic.Marshal(e.curve, pub.X, pub.Y)
-}
 
-func (e *ECDH) Unmarshal(data []byte) crypto.PublicKey {
-	var key *ellipticPublicKey
 
-	x, y := elliptic.Unmarshal(e.curve, data)
-
-	key = &ellipticPublicKey{
-		X: x,
-		Y: y,
-	}
-
-	return key
-}
